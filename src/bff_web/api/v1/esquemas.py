@@ -38,7 +38,12 @@ class OrdenRespuesta:
     mensaje: str
     codigo: int
 
-
+@strawberry.type
+class ItemInput:
+    direccion_recogida: str
+    direccion_entrega: str
+    tamanio: str
+    telefono: str
 
 
 
