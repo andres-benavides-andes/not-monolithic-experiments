@@ -116,7 +116,7 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  # Servicios de AeroAlpes
+  # Servicios de EOA
   centrodistribucion:
     container_name: centrodistribucion
     hostname: centrodistribucion
@@ -128,7 +128,40 @@ services:
       - broker
       - db
     environment:
-      - AEROALPES_ADDRESS=centrodistribucion
+      - API_ADDRESS=centrodistribucion
       - PULSAR_ADDRESS=broker
     ports:
       - "5000:5000"
+
+  ordenes:
+    container_name: ordenes
+    hostname: ordenes
+    image: ordenes/flask 
+    profiles: ["ordenes", "monolito"]
+    networks:
+      - pulsar
+    depends_on:
+      - broker
+      - db
+    environment:
+      - API_ADDRESS=ordenes
+      - PULSAR_ADDRESS=broker
+    ports:
+      - "5000:5000"
+
+  # Servicio BFF
+  bff:
+    container_name: bff
+    hostname: bff
+    image: ordenes/bff 
+    profiles: ["ordenes", "bff"]
+    depends_on:
+      - ordenes
+      - broker
+    environment:
+      - API_ADDRESS=ordenes
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    ports:
+      - "8003:8003"

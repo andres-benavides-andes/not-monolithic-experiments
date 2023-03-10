@@ -20,7 +20,7 @@ Este comando descarga las imagenes y levanta el broker de eventos pulsar
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker-compose --profiles db up
+docker-compose --profile db up
 ```
 
 Este comando descarga las imágenes e instala las dependencias de la base datos.
@@ -51,6 +51,29 @@ Esto va a ejecutar el microservicio de Entregas
 Desde el directorio principal ejecute el siguiente comando.
 ``` bash
 python src/test-eventos/envio-crearorden.py
+```
+
+## BFF: Web
+
+Desde el directorio `src` ejecute el siguiente comando
+```bash
+uvicorn bff_web.main:app --host localhost --port 8003 --reload
+```
+
+### Crear imagen Docker
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker build . -f bff.Dockerfile -t ordenes/bff
+```
+
+### Ejecutar contenedora (sin compose)
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker run ordenes/bff
 ```
 
 Esto va a publicar un comando en el topico de comandos de eventos con la informacion necesario para crear un evento de alli se realiza la coreografia en una transaccion larga pasando por cada microservicio para entregar la orden

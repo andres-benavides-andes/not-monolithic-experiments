@@ -4,7 +4,7 @@ from typing import List
 
 from strawberry.types import Info
 from bff_web import utils
-from bff_web.despachadores import Despachador
+from bff_web.despachadores import Despachador, ComandoCrearOrden, ComandoCrearOrdenPayload
 
 from .esquemas import *
 
@@ -30,16 +30,23 @@ class Mutation:
             items=[item.__dict__ for item in items]
         )
 
-        comando = dict(
-            id = str(uuid.uuid4()),
-            time=utils.time_millis(),
-            specversion = "v1",
-            type = "ComandoOrden",
-            ingestion=utils.time_millis(),
-            datacontenttype="AVRO",
-            service_name = "BFF Web",
-            data = payload
+        comando = ComandoCrearOrden(
+            data= ComandoCrearOrdenPayload (
+                items= [item.__dict__ for item in items],
+                fecha_creacion=utils.time_millis(),
+            )
         )
+
+        # comando = dict(
+        #     id = str(uuid.uuid4()),
+        #     time=utils.time_millis(),
+        #     specversion = "v1",
+        #     type = "ComandoOrden",
+        #     ingestion=utils.time_millis(),
+        #     datacontenttype="AVRO",
+        #     service_name = "BFF Web",
+        #     data = payload
+        # )
         despachador = Despachador()
         info.context["background_tasks"].add_task(despachador.publicar_mensaje, comando, "comandos-orden", "public/default/comandos-orden")
         
