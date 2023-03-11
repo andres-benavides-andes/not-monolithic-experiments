@@ -22,3 +22,5 @@ class EntregarOrdenItems:
     direccion_entrega: str = None
     persona_recibe: str = None
     mecanismo_entrega: str = None
+
+# TODO-SAGA CancelarOrden

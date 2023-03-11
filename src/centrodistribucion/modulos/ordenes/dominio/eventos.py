@@ -23,3 +23,5 @@ class AlistarOrdenItems:
     tamanio: str = None
     telefono: str = None
     
+
+# TODO-SAGA crear OrdenDesAlistada

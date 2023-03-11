@@ -2,15 +2,13 @@ from aeroalpes.seedwork.aplicacion.sagas import CoordinadorOrquestacion, Transac
 from aeroalpes.seedwork.aplicacion.comandos import Comando
 from aeroalpes.seedwork.dominio.eventos import EventoDominio
 
-from aeroalpes.modulos.sagas.aplicacion.comandos.cliente import RegistrarUsuario, ValidarUsuario
-from aeroalpes.modulos.sagas.aplicacion.comandos.pagos import PagarReserva, RevertirPago
-from aeroalpes.modulos.sagas.aplicacion.comandos.gds import ConfirmarReserva, RevertirConfirmacion
-from aeroalpes.modulos.vuelos.aplicacion.comandos.crear_reserva import CrearReserva
-from aeroalpes.modulos.vuelos.aplicacion.comandos.aprobar_reserva import AprobarReserva
-from aeroalpes.modulos.vuelos.aplicacion.comandos.cancelar_reserva import CancelarReserva
-from aeroalpes.modulos.vuelos.dominio.eventos.reservas import ReservaCreada, ReservaCancelada, ReservaAprobada, CreacionReservaFallida, AprobacionReservaFallida
-from aeroalpes.modulos.sagas.dominio.eventos.pagos import ReservaPagada, PagoRevertido
-from aeroalpes.modulos.sagas.dominio.eventos.gds import ReservaGDSConfirmada, ConfirmacionGDSRevertida, ConfirmacionFallida
+
+from ordenes.modulos.sagas.aplicacion.comandos.centrodistribucion import AlistarOrden, DesalistarOrden
+from ordenes.modulos.sagas.aplicacion.comandos.entregas import EntregarOrden, CancelarEntrega
+from ordenes.modulos.ordenes.aplicacion.comandos.crear_orden import CrearOrden
+from ordenes.modulos.ordenes.dominio.eventos import OrdenCreada, CreacionOrdenFallida
+from ordenes.modulos.sagas.dominio.eventos.centrodistribucion import OrdenAlistada, OrdenDesAlistada
+from ordenes.modulos.sagas.dominio.eventos.entregas import OrdenEntregada, CancelarOrden
 
 
 class CoordinadorOrdenes(CoordinadorOrquestacion):
@@ -18,10 +16,9 @@ class CoordinadorOrdenes(CoordinadorOrquestacion):
     def inicializar_pasos(self):
         self.pasos = [
             Inicio(index=0),
-            Transaccion(index=1, comando=CrearReserva, evento=ReservaCreada, error=CreacionReservaFallida, compensacion=None),
-            Transaccion(index=2, comando=PagarReserva, evento=ReservaPagada, error=PagoFallido, compensacion=RevertirPago),
-            Transaccion(index=3, comando=ConfirmarReserva, evento=ReservaGDSConfirmada, error=ConfirmacionFallida, compensacion=ConfirmacionGDSRevertida),
-            Transaccion(index=4, comando=AprobarReserva, evento=ReservaAprobada, error=AprobacionReservaFallida, compensacion=CancelarReserva),
+            Transaccion(index=1, comando=CrearOrden, evento=OrdenCreada, error=CreacionOrdenFallida, compensacion=None),          
+            Transaccion(index=2, comando=AlistarOrden, evento=OrdenAlistada, error=OrdenDesAlistada, compensacion=DesalistarOrden),
+            Transaccion(index=3, comando=EntregarOrden, evento=OrdenEntregada, error=CancelarOrden, compensacion=CancelarEntrega),
             Fin(index=5)
         ]
 

@@ -1,7 +1,7 @@
 
-class ConfirmarReserva():
+class EntregarOrden():
     ...
 
-class RevertirConfirmacion():
+class CancelarEntrega():
     ...
 

@@ -1,9 +1,6 @@
 
-class RegistrarUsuario():
+class AlistarOrden():
     ...
 
-class DesactivarUsuario():
-    ...
-
-class ValidarUsuario():
+class DesalistarOrden():
     ...
