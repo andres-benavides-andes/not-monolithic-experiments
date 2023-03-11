@@ -108,7 +108,7 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=adminadmin
-    profiles: ["aeroalpes", "db"]
+    profiles: ["ordenes", "db"]
     networks:
       - pulsar
     ports:
