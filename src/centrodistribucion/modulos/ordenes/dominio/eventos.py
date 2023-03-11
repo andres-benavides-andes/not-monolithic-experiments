@@ -22,6 +22,9 @@ class AlistarOrdenItems:
     direccion_entrega: str = None
     tamanio: str = None
     telefono: str = None
-    
 
 # TODO-SAGA crear OrdenDesAlistada
+@dataclass
+class OrdenDesAlistada(EventoOrden):
+    id_orden: uuid.UUID = None
+    fecha_actualizacion: datetime = None

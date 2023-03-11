@@ -3,20 +3,31 @@ from dataclasses import dataclass, field
 from aeroalpes.seedwork.dominio.eventos import (EventoDominio)
 from datetime import datetime
 
-class EventoCentrodistribucion(EventoDominio):
+class EventoOrden(EventoDominio):
     ...
 
 
 @dataclass
-class OrdenAlistada(EventoCentrodistribucion):
-    id_reserva: uuid.UUID = None
-    id_cliente: uuid.UUID = None
-    estado: str = None
-    fecha_creacion: datetime = None
-    
 @dataclass
-class OrdenDesAlistada(EventoCentrodistribucion):
-    id_reserva: uuid.UUID = None
+class OrdenAlistada(EventoOrden):
+    guid: str = None
+    fecha_creacion: str = None
+    items: List[AlistarOrdenItems] = None
+
+
+@dataclass
+class AlistarOrdenItems:
+    guid: str = None
+    direccion_centro_distribucion: str = None
+    direccion_entrega: str = None
+    tamanio: str = None
+    telefono: str = None
+    
+
+# TODO-SAGA mapear evento
+@dataclass
+class OrdenDesAlistada(EventoOrden):
+    id_orden: uuid.UUID = None
     fecha_actualizacion: datetime = None
 
 
