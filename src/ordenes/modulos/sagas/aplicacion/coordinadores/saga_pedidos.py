@@ -1,6 +1,6 @@
-from aeroalpes.seedwork.aplicacion.sagas import CoordinadorOrquestacion, Transaccion, Inicio, Fin
-from aeroalpes.seedwork.aplicacion.comandos import Comando
-from aeroalpes.seedwork.dominio.eventos import EventoDominio
+from ordenes.seedwork.aplicacion.sagas import CoordinadorOrquestacion, Transaccion, Inicio, Fin
+from ordenes.seedwork.aplicacion.comandos import Comando
+from ordenes.seedwork.dominio.eventos import EventoDominio
 
 
 from ordenes.modulos.sagas.aplicacion.comandos.centrodistribucion import AlistarOrden, DesalistarOrden
