@@ -13,7 +13,7 @@ from aeroalpes.modulos.sagas.dominio.eventos.pagos import ReservaPagada, PagoRev
 from aeroalpes.modulos.sagas.dominio.eventos.gds import ReservaGDSConfirmada, ConfirmacionGDSRevertida, ConfirmacionFallida
 
 
-class CoordinadorReservas(CoordinadorOrquestacion):
+class CoordinadorOrdenes(CoordinadorOrquestacion):
 
     def inicializar_pasos(self):
         self.pasos = [
