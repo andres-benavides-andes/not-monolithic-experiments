@@ -9,12 +9,10 @@ from bff_web.despachadores import ComandoCrearOrden
 
 async def suscribirse_a_topico(topico: str, suscripcion: str, schema: str, tipo_consumidor:_pulsar.ConsumerType=_pulsar.ConsumerType.Shared, eventos=[]):
     try:
-        # json_schema = utils.consultar_schema_registry(schema)  
         avro_schema = AvroSchema(ComandoCrearOrden)
-        print(f'HOSTTTTTTTTTTTTTT {get_token()}')
         async with aiopulsar.connect(
-            f'pulsar+ssl://{broker_host()}:6651',
-            authentication=pulsar.AuthenticationToken(get_token())
+            f'pulsar+ssl://{utils.broker_host()}:6651',
+            authentication=pulsar.AuthenticationToken(utils.get_token())
         ) as cliente:
             async with cliente.subscribe(
                 topico, 
@@ -28,8 +26,13 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: str, tipo_
                     datos = mensaje.value()
                     print(f'Evento recibido: {datos}')
                     eventos.append(str(datos))
-                    await consumidor.acknowledge(mensaje)    
+                    await consumidor.acknowledge(mensaje)
+                    if cliente.is_closed():
+                        break # exit loop if client is closed
 
     except:
         logging.error(f'ERROR: Suscribiendose al tópico! {topico}, {suscripcion}, {schema}')
         traceback.print_exc()
+    finally:
+        if not cliente.is_closed():
+            await cliente.close() # close client if not already closed
