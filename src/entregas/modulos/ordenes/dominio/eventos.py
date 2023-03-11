@@ -23,4 +23,7 @@ class EntregarOrdenItems:
     persona_recibe: str = None
     mecanismo_entrega: str = None
 
-# TODO-SAGA CancelarOrden
+@dataclass
+class CancelarOrden(EventoOrden):
+    guid: str = None
+    fecha_actualizacion: datetime = None
