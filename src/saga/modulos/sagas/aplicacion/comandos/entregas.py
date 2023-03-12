@@ -1,7 +1,0 @@
-
-class EntregarOrden():
-    ...
-
-class CancelarEntrega():
-    ...
-

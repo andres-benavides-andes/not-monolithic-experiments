@@ -1,6 +1,0 @@
-
-class AlistarOrden():
-    ...
-
-class DesalistarOrden():
-    ...
