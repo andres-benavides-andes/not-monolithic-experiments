@@ -1,4 +1,6 @@
 import datetime
+import json
+import uuid
 from ordenes.config.db import db, session
 from ordenes.modulos.ordenes.dominio.eventos import OrdenCreada
 from ordenes.modulos.ordenes.dominio.repositorios import RepositorioOrdenes, RepositorioEventosOrdenes
@@ -46,9 +48,9 @@ class RepositorioOrdenesSQLAlchemy(RepositorioOrdenes):
         # TODO
         raise NotImplementedError
 
-    def eliminar(self, orden_id: UUID):
-        # TODO
-        raise NotImplementedError
+    def eliminar(self, orden_id: str):
+        session.query(OrdenDTO).filter_by(guid=orden_id).delete()
+        session.commit()
 
 class RepositorioEventosOrdenesSQLAlchemy(RepositorioEventosOrdenes):
     def obtener_por_id(self, id: UUID) -> Orden:
@@ -71,10 +73,10 @@ class RepositorioEventosOrdenesSQLAlchemy(RepositorioEventosOrdenes):
             evento_dto.id = str(evento_dominio.id)
             evento_dto.id_entidad = str(evento.guid)
             evento_dto.fecha_evento = datetime.datetime.fromtimestamp(int(evento.fecha_creacion))
-            evento_dto.version = str(orden_evento.specversion)
+            evento_dto.version = 'v1'
             evento_dto.tipo_evento = evento.__class__.__name__
             evento_dto.formato_contenido = 'JSON'
-            evento_dto.nombre_servicio = str(orden_evento.service_name)
+            evento_dto.nombre_servicio = 'Ordenes'
             evento_dto.contenido = json_str
             
             session.add(evento_dto)
@@ -86,5 +88,20 @@ class RepositorioEventosOrdenesSQLAlchemy(RepositorioEventosOrdenes):
     def actualizar(self, orden: Orden):
         raise NotImplementedError
 
-    def eliminar(self, orden_id: UUID):
-        raise NotImplementedError
+    def eliminar(self, orden_id: str):
+        json_str = json.dumps({
+            "guid": orden_id
+            })
+
+        evento_dto = EventosOrden()
+        evento_dto.id = str(uuid.uuid4())
+        evento_dto.id_entidad = str(orden_id)
+        evento_dto.fecha_evento = datetime.datetime.utcnow()
+        evento_dto.version = 'v1'
+        evento_dto.nombre_servicio = 'Ordenes'
+        evento_dto.tipo_evento = 'OrdenEliminada'
+        evento_dto.formato_contenido = 'JSON'
+        evento_dto.contenido = json_str
+
+        session.add(evento_dto)
+        session.commit()

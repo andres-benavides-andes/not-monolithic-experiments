@@ -9,7 +9,7 @@ Base = db.declarative_base()
 class Paquete(db.Model):
     __tablename__ = "paquetes"
     guid = db.Column(db.String(40), primary_key=True)
-    orden_guid = db.Column(db.String(40), db.ForeignKey('orden.guid'))
+    orden_guid = db.Column(db.String(40), db.ForeignKey('orden.guid', ondelete='CASCADE'))
     direccion_recogida = db.Column(db.String(40), nullable=False)
     direccion_entrega = db.Column(db.String(40), nullable=False)
     tamanio = db.Column(db.String(10), nullable=False)
@@ -19,7 +19,7 @@ class Orden(db.Model):
     __tablename__ = "orden"
     guid = db.Column(db.String(40), primary_key=True)
     fecha_creacion = db.Column(db.DateTime, nullable=False)
-    items = db.relationship('Paquete',  backref='orden')
+    items = db.relationship('Paquete',  backref='orden' , passive_deletes=True)
 
 class EventosOrden(db.Model):
     __tablename__ = "eventos_orden"

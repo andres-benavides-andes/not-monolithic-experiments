@@ -31,3 +31,23 @@ class EventoOrdenCreada(EventoIntegracion):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+###########################
+### EVENTO COMPENSACION RECIBIR ###
+###########################
+class EventoOrdenCreadaCompensacionPayload(Record):
+    guid = String()
+    fecha_compensacion = Long(default=time_millis())
+
+class EventoOrdenCreadaCompensacion(EventoIntegracion):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=time_millis())
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
+    data = EventoOrdenCreadaCompensacionPayload()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

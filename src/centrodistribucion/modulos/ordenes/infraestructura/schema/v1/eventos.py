@@ -59,7 +59,7 @@ class EventoOrdenAlistada(EventoIntegracion):
         super().__init__(*args, **kwargs)
 
 ###########################
-### EVENTO COMPENSACION ###
+### EVENTO COMPENSACION ENVIAR ###
 ###########################
 class EventoOrdenCreadaCompensacionPayload(Record):
     guid = String()
@@ -77,3 +77,24 @@ class EventoOrdenCreadaCompensacion(EventoIntegracion):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+###########################
+### EVENTO COMPENSACION ESCUCHAR ###
+###########################
+class EventoOrdenAlistadaCompensacionPayload(Record):
+    guid = String()
+    fecha_compensacion = Long(default=time_millis())
+
+class EventoOrdenAlistadaCompensacion(EventoIntegracion):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=time_millis())
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
+    data = EventoOrdenAlistadaCompensacionPayload()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+

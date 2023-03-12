@@ -5,9 +5,10 @@ import uuid
 import time
 import logging
 import traceback
+from centrodistribucion.modulos.ordenes.aplicacion.comandos.eliminar_orden import EliminarOrdenHandler
 from centrodistribucion.modulos.ordenes.infraestructura.despachadores import DespachadorCompensacion
 
-from centrodistribucion.modulos.ordenes.infraestructura.schema.v1.eventos import EventoOrdenCreada, EventoOrdenCreadaCompensacion, EventoOrdenCreadaCompensacionPayload
+from centrodistribucion.modulos.ordenes.infraestructura.schema.v1.eventos import EventoOrdenAlistadaCompensacion, EventoOrdenCreada, EventoOrdenCreadaCompensacion, EventoOrdenCreadaCompensacionPayload
 from centrodistribucion.modulos.ordenes.aplicacion.comandos.alistar_orden import AlistarOrden, AlistarOrdenItems
 from centrodistribucion.seedwork.infraestructura import utils
 from centrodistribucion.seedwork.aplicacion.comandos import ejecutar_commando
@@ -73,6 +74,32 @@ def suscribirse_a_eventos():
 
             ejecutar_commando(comando)
 
+            consumidor.acknowledge(mensaje)
+
+        cliente.close()
+    except:
+        logging.error('ERROR: Suscribiendose al tópico de eventos!')
+        traceback.print_exc()
+        if cliente:
+            cliente.close()
+
+def suscribirse_a_eventos_compensacion():
+    cliente = None
+    try:
+
+        cliente = pulsar.Client(
+            f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
+        consumidor = cliente.subscribe('eventos-centrodistribucion-compensacion', consumer_type=_pulsar.ConsumerType.Shared,
+                                       subscription_name='centrodistribucion-sub-eventos', schema=AvroSchema(EventoOrdenAlistadaCompensacion))
+        
+        while True:
+            mensaje = consumidor.receive()
+            print(f'Evento recibido: {mensaje.value().data}')
+
+            orden_guid = mensaje.value().data.guid
+
+            print("===Simulando compensacion tras entrega fallida===")
+            EliminarOrdenHandler().handle(orden_guid)
             consumidor.acknowledge(mensaje)
 
         cliente.close()

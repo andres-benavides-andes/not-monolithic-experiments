@@ -20,6 +20,9 @@ def comenzar_consumidor():
     # Suscripción a eventos
     threading.Thread(target=ordenes.suscribirse_a_eventos).start()
 
+    # Suscripcion compensacion
+    threading.Thread(target=ordenes.suscribirse_a_eventos_compensacion).start()
+
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
     app = Flask(__name__, instance_relative_config=True)
