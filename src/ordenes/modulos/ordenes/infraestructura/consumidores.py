@@ -7,9 +7,12 @@ import time
 import logging
 import traceback
 import uuid
+from entregas.modulos.ordenes.infraestructura.schema.v1.eventos import EventoOrdenAlistadaCompensacion
+from ordenes.modulos.ordenes.aplicacion.comandos.eliminar_orden import EliminarOrdenHandler
 
 from ordenes.modulos.ordenes.infraestructura.schema.v1.comandos import ComandoCrearOrden
 from ordenes.modulos.ordenes.aplicacion.comandos.crear_orden import CrearOrden, CrearOrdenItems
+from ordenes.modulos.ordenes.infraestructura.schema.v1.eventos import EventoOrdenCreadaCompensacion, EventoOrdenCreadaCompensacionPayload
 from ordenes.seedwork.infraestructura import utils
 from ordenes.seedwork.aplicacion.comandos import ejecutar_commando
 
@@ -62,6 +65,33 @@ def suscribirse_a_comandos():
 
             ejecutar_commando(comando)
 
+            consumidor.acknowledge(mensaje)
+
+        cliente.close()
+    except:
+        logging.error('ERROR: Suscribiendose al tópico de eventos!')
+        traceback.print_exc()
+        if cliente:
+            cliente.close()
+
+
+def suscribirse_a_eventos_compensacion():
+    cliente = None
+    try:
+
+        cliente = pulsar.Client(
+            f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
+        consumidor = cliente.subscribe('eventos-orden-compensacion', consumer_type=_pulsar.ConsumerType.Shared,
+                                       subscription_name='eventos-sub-eventos', schema=AvroSchema(EventoOrdenCreadaCompensacion))
+
+        while True:
+            mensaje = consumidor.receive()
+            print(f'Evento recibido: {mensaje.value().data}')
+
+            orden_guid = mensaje.value().data.guid
+
+            print("===Simulando compensacion tras Alistada fallida===")
+            EliminarOrdenHandler().handle(orden_guid)
             consumidor.acknowledge(mensaje)
 
         cliente.close()
