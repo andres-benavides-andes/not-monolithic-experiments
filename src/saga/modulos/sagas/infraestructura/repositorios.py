@@ -1,7 +1,7 @@
 import datetime
-from ordenes.config.db import db, session
-from ordenes.modulos.sagas.dominio.entidades import PasoSaga, TransactionSaga
-from ordenes.modulos.sagas.dominio.repositorios import RepositorioPasosSaga, RepositorioTransaccionesSaga
+from saga.config.db import db, session
+from saga.modulos.sagas.dominio.entidades import PasoSaga, TransactionSaga
+from saga.modulos.sagas.dominio.repositorios import RepositorioPasosSaga, RepositorioTransaccionesSaga
 
 from uuid import UUID
 from .dto import PasoSaga as PasoSagaDTO

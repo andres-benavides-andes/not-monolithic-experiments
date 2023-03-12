@@ -76,6 +76,29 @@ Desde el directorio principal ejecute el siguiente comando.
 docker run ordenes/bff
 ```
 
+## Sagalog:
+
+Desde el directorio `src` ejecute el siguiente comando
+```bash
+uvicorn sagalog.main:app --host localhost --port 8004 --reload
+```
+
+### Crear imagen Docker
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker build . -f sagalog.Dockerfile -t ordenes/sagalog
+```
+
+### Ejecutar contenedora (sin compose)
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker run ordenes/sagalog
+```
+
 Esto va a publicar un comando en el topico de comandos de eventos con la informacion necesario para crear un evento de alli se realiza la coreografia en una transaccion larga pasando por cada microservicio para entregar la orden
 
 ## Overview diagrama arquitectura

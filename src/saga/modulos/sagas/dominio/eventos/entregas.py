@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from ordenes.seedwork.dominio.eventos import (EventoDominio)
+from saga.seedwork.dominio.eventos import (EventoDominio)
 from datetime import datetime
 import uuid
 from typing import List

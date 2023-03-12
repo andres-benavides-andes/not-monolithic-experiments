@@ -1,8 +1,6 @@
-from ordenes.config.db import db
+from saga.config.db import db
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, ForeignKey, Integer, Table
-
-import uuid
 
 Base = db.declarative_base()
 
@@ -18,6 +16,7 @@ class PasoSaga(db.Model):
 class TransactionSaga(db.Model):
     __tablename__ = "saga_transactions"
     guid = db.Column(db.String(40), primary_key=True)
+    transaction_id = db.Column(db.String(40), nullable=False)
     step = db.Column(db.String(40), db.ForeignKey('saga_steps.guid'))
     estado = db.Column(db.String(30), nullable=False)
     fecha_transaccion = db.Column(db.DateTime, nullable=False)

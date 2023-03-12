@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from ordenes.seedwork.dominio.entidades import Entidad
+from saga.seedwork.dominio.entidades import Entidad
 
 @dataclass
 class PasoSaga(Entidad):
