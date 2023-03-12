@@ -11,6 +11,11 @@ from sagalog.repositorio import TransactionSagaRepository
 import time
 import datetime
 
+from sagalog.eventos.evento_integracion import EventoIntegracion
+from sagalog.eventos.eventos_orden import EventoOrdenCreada, EventoOrdenCreadaCompensacion
+from sagalog.eventos.eventos_centrodistribucion import EventoOrdenAlistada, EventoOrdenAlistadaCompensacion
+from sagalog.eventos.eventos_entregas import EventoOrdenEntregada
+
 def time_millis():
     return int(time.time() * 1000)
 
@@ -50,95 +55,7 @@ def get_avro_schema(evento):
         return AvroSchema(EventoOrdenAlistada)
     if evento == 'OrdenEntregada':
         return AvroSchema(EventoOrdenEntregada)
-
-
-class EventoIntegracion(Record):
-    id = String(default=str(uuid.uuid4()))
-    time = Long()
-    ingestion = Long(default=time_millis())
-    specversion = String()
-    type = String()
-    datacontenttype = String()
-    service_name = String()
-
-#### EVENTO ORDEN CREADA ###
-
-class EventoOrdenCreadaItem(Record):
-    guid = String()
-    direccion_recogida = String()
-    direccion_entrega = String()
-    tamanio = String()
-    telefono = String()
-
-class EventoOrdenCreadaPayload(Record):
-    guid = String()
-    items = Array(EventoOrdenCreadaItem())
-    fecha_creacion = Long()
-
-class EventoOrdenCreada(EventoIntegracion):
-    id = String(default=str(uuid.uuid4()))
-    time = Long()
-    ingestion = Long(default=time_millis())
-    specversion = String()
-    type = String()
-    datacontenttype = String()
-    service_name = String()
-    data = EventoOrdenCreadaPayload()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-#### EVENTO ORDEN ALISTADA ###
-
-class EventoOrdenAlistadaItem(Record):
-    guid = String()
-    direccion_centro_distribucion = String()
-    direccion_entrega = String()
-    tamanio = String()
-    telefono = String()
-
-class EventoOrdenAlistadaPayload(Record):
-    guid = String()
-    items = Array(EventoOrdenAlistadaItem())
-    fecha_creacion = Long()
-
-class EventoOrdenAlistada(EventoIntegracion):
-    id = String(default=str(uuid.uuid4()))
-    time = Long()
-    ingestion = Long(default=time_millis())
-    specversion = String()
-    type = String()
-    datacontenttype = String()
-    service_name = String()
-    data = EventoOrdenAlistadaPayload()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-#### EVENTO ORDEN ENTREGADA ###
-
-class EventoOrdenEntregadaItem(Record):
-    guid = String()
-    direccion_centro_distribucion = String()
-    direccion_entrega = String()
-    tamanio = String()
-    telefono = String()
-
-class EventoOrdenEntregadaPayload(Record):
-    guid = String()
-    items = Array(EventoOrdenEntregadaItem())
-    fecha_creacion = Long()
-
-class EventoOrdenEntregada(EventoIntegracion):
-    id = String(default=str(uuid.uuid4()))
-    time = Long()
-    ingestion = Long(default=time_millis())
-    specversion = String()
-    type = String()
-    datacontenttype = String()
-    service_name = String()
-    data = EventoOrdenEntregadaPayload()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    if evento == 'CancelarOrden':
+        return AvroSchema(EventoOrdenCreadaCompensacion)
+    if evento == 'OrdenDesAlistada':
+        return AvroSchema(EventoOrdenAlistadaCompensacion)
