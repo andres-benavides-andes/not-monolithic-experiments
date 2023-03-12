@@ -6,6 +6,11 @@ RUN apk update && apk add python3-dev \
 
 EXPOSE 8004/tcp
 
+COPY requirements.txt ./
+RUN pip install --upgrade --no-cache-dir pip setuptools wheel
+RUN pip install --no-cache-dir wheel
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY sagalog-requirements.txt ./
 RUN pip install --no-cache-dir -r sagalog-requirements.txt
 
