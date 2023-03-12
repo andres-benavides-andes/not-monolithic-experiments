@@ -29,6 +29,6 @@ class TransactionSaga(Base):
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
-def seed_steps_table():
-    from sagalog.config.seed import seed_steps_table as seed
-    seed()
+
+from sagalog.config.seed import seed_steps_table as seed
+seed()
