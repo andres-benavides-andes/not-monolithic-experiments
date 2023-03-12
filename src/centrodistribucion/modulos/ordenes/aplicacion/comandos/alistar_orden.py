@@ -53,6 +53,3 @@ class AlistarOrdenHandler(AlistarOrdenBaseHandler):
 def ejecutar_comando_alistar_orden(comando: AlistarOrden):
     handler = AlistarOrdenHandler()
     handler.handle(comando)
-    
-
-# TODO-SAGA Crear comando DesalistarOrden

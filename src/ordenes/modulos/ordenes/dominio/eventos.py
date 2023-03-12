@@ -22,10 +22,3 @@ class OrdenCreadaItems:
     direccion_entrega: str = None
     tamanio: str = None
     telefono: str = None
-    
-# TODO-SAGA Crear evento CreacionOrdenbFallida
-
-@dataclass
-class CreacionOrdenFallida(EventoOrden):
-    id_reserva: uuid.UUID = None
-    fecha_actualizacion: datetime = None
