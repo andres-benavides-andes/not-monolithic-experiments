@@ -18,11 +18,13 @@ from .repositorio import TransactionSagaRepository
 
 from . import utils
 
+from typing import Dict
+
 class Config(BaseSettings):
     APP_VERSION: str = "1"
 
 settings = Config()
-app_configs: dict[str, Any] = {"title": "SAGA"}
+app_configs: Dict[str, Any] = {"title": "SAGA"}
 
 app = FastAPI(**app_configs)
 tasks = list()
@@ -47,11 +49,11 @@ async def app_startup():
 
     task2 = asyncio.ensure_future(
         suscribirse_a_topico(
-            "eventos-centrosdistribucion",
+            "eventos-centrodistribucion",
             "saga-log",
             "OrdenAlistada",
             "EXITOSO",
-            "public/default/eventos-centrosdistribucion",
+            "public/default/eventos-centrodistribucion",
             eventos=eventos
         )
     )
@@ -83,11 +85,11 @@ async def app_startup():
 
     task5 = asyncio.ensure_future(
         suscribirse_a_topico(
-            "eventos-centrosdistribucion-compensacion",
+            "eventos-centrodistribucion-compensacion",
             "saga-log",
             "OrdenDesAlistada",
             "FALLIDO",
-            "public/default/eventos-centrosdistribucion-compensacion",
+            "public/default/eventos-centrodistribucion-compensacion",
             eventos=eventos
         )
     )

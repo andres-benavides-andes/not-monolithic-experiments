@@ -24,7 +24,7 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, evento: str, estad
         avro_schema = get_avro_schema(evento)
         async with aiopulsar.connect(
             f'pulsar+ssl://{utils.broker_host()}:6651',
-            authentication=pulsar.AuthenticationToken(utils.get_token())
+            authentication=utils.get_pulsar_auth()
         ) as cliente:
         # async with aiopulsar.connect(
         #     f'pulsar://localhost:6650',
