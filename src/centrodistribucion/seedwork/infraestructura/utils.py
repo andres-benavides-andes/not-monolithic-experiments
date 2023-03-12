@@ -22,3 +22,22 @@ def broker_auth():
     if jwt_token:
         return pulsar.AuthenticationToken(jwt_token)
     return None
+
+sim_error = None
+def get_sim_error(orderGuid: str):
+    global sim_error
+    if sim_error is None:
+        sim_error = dict()
+
+    if orderGuid in sim_error:
+        return sim_error[orderGuid]
+    else:
+        ""
+
+def set_sim_error(orderGuid: str, value: str):
+    global sim_error
+    if sim_error is None:
+        sim_error = dict()
+    if value is None:
+        value = ""
+    sim_error[orderGuid] = value

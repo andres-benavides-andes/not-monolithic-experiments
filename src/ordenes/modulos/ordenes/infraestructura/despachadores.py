@@ -13,6 +13,7 @@ class Despachador:
         ...
 
     def _publicar_mensaje(self, mensaje, topico, schema):
+
         cliente = pulsar.Client(f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
 
         publicador = cliente.create_producer(topico, schema=AvroSchema(EventoOrdenCreada))
@@ -22,5 +23,6 @@ class Despachador:
     def publicar_evento(self, evento, topico):
         #Transformar a Evento de Dominio a integracion
         evento = EventoDominioAIntegracion(evento)
-
+        # SAGA: Simulate Error
+        evento.sim_error = utils.get_sim_error(evento.data.guid)
         self._publicar_mensaje(evento, topico, AvroSchema(evento.__class__))

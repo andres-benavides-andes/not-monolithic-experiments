@@ -33,5 +33,5 @@ class Orden(AgregacionRaiz):
         self.agregar_evento(OrdenCreada(
             fecha_creacion=self.fecha_creacion,
             guid=self.guid,
-            items=self.items
+            items=self.items,
         ))

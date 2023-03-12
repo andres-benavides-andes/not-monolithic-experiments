@@ -14,21 +14,34 @@ from ordenes.seedwork.infraestructura import utils
 from ordenes.seedwork.aplicacion.comandos import ejecutar_commando
 
 
+def simular_error():
+    print("===============================================")
+    print("SERVICIO DE ORDENES FALLO, NO SE CREA ORDEN")
+    print("===============================================")
+
 
 def suscribirse_a_comandos():
     cliente = None
     try:
-        cliente = pulsar.Client(f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
+        cliente = pulsar.Client(
+            f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
         consumidor = cliente.subscribe('comandos-orden', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='ordenes-sub-comandos', schema=AvroSchema(ComandoCrearOrden))
 
         while True:
             mensaje = consumidor.receive()
             print(f'Comando recibido: {mensaje.value().data}')
-            
+
             orden_dto = mensaje.value().data
+
+            sim_error = mensaje.value().sim_error
+            if (sim_error == "ordenes"):
+                simular_error()
+                consumidor.acknowledge(mensaje)
+                continue
+
             print("===Se realizan las validaciones de pedido y se asigna un id===")
-            comando = CrearOrden (
+            comando = CrearOrden(
                 fecha_creacion=int(datetime.datetime.utcnow().timestamp()),
                 guid=str(uuid.uuid4()),
                 # Llega una orden y la convierto a mi centro de distribuccion
@@ -42,7 +55,11 @@ def suscribirse_a_comandos():
                     ) for item in orden_dto.items
                 ]
             )
-            
+
+            utils.set_sim_error(
+                comando.guid, sim_error
+            )
+
             ejecutar_commando(comando)
 
             consumidor.acknowledge(mensaje)

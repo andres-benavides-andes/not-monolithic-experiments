@@ -5,7 +5,7 @@ import traceback
 import uvicorn
 import uuid
 import datetime
-
+from typing import Dict
 
 from pydantic import BaseSettings
 from typing import Any
@@ -22,7 +22,7 @@ class Config(BaseSettings):
     APP_VERSION: str = "1"
 
 settings = Config()
-app_configs: dict[str, Any] = {"title": "BFF-Web EOA"}
+app_configs: Dict[str, Any] = {"title": "BFF-Web EOA"}
 
 app = FastAPI(**app_configs)
 tasks = list()

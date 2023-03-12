@@ -5,8 +5,9 @@ import uuid
 import time
 import logging
 import traceback
+from entregas.modulos.ordenes.infraestructura.despachadores import DespachadorCompensacion
 
-from entregas.modulos.ordenes.infraestructura.schema.v1.eventos import EventoOrdenAlistada
+from entregas.modulos.ordenes.infraestructura.schema.v1.eventos import EventoOrdenAlistada, EventoOrdenAlistadaCompensacion, EventoOrdenAlistadaCompensacionPayload
 from entregas.modulos.ordenes.aplicacion.comandos.entregar_orden import EntregarOrden, EntregarOrdenItems
 from entregas.seedwork.infraestructura import utils
 from entregas.seedwork.aplicacion.comandos import ejecutar_commando
@@ -28,10 +29,26 @@ def simularEntrega():
     }
 
 
+def simular_error(mensaje_value):
+    print("===============================================")
+    print("SERVICIO DE ENTREGAS FALLO, NO SE ENTREGA ORDEN")
+    print("===============================================")
+    despachador = DespachadorCompensacion()
+    despachador._publicar_mensaje(
+        mensaje=EventoOrdenAlistadaCompensacion(
+            data=EventoOrdenAlistadaCompensacionPayload(
+                guid=mensaje_value.data.guid
+            )
+        ),
+        topico="eventos-centrodistribucion-compensacion",
+    )
+
+
 def suscribirse_a_eventos():
     cliente = None
     try:
-        cliente = pulsar.Client(f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
+        cliente = pulsar.Client(
+            f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
         consumidor = cliente.subscribe('eventos-centrodistribucion', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='entregas-sub-eventos', schema=AvroSchema(EventoOrdenAlistada))
 
@@ -40,6 +57,13 @@ def suscribirse_a_eventos():
             print(f'Evento recibido: {mensaje.value().data}')
 
             orden_dto = mensaje.value().data
+
+            sim_error = mensaje.value().sim_error
+            if (sim_error == "entregas"):
+                simular_error(mensaje.value())
+                consumidor.acknowledge(mensaje)
+                continue
+
             print("===Simulacion Items Entregados===")
 
             orden_items = []
