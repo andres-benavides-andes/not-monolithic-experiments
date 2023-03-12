@@ -22,3 +22,4 @@ class OrdenCreadaItems:
     direccion_entrega: str = None
     tamanio: str = None
     telefono: str = None
+
