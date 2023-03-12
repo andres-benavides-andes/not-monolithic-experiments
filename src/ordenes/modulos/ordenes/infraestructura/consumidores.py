@@ -18,7 +18,7 @@ from ordenes.seedwork.aplicacion.comandos import ejecutar_commando
 def suscribirse_a_comandos():
     cliente = None
     try:
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        cliente = pulsar.Client(f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
         consumidor = cliente.subscribe('comandos-orden', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='ordenes-sub-comandos', schema=AvroSchema(ComandoCrearOrden))
 

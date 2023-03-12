@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: entregas-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: entregas
+  template:
+    metadata:
+      labels:
+        app: entregas
+    spec:
+      containers:
+      - name: entregas-container
+        image: us-east1-docker.pkg.dev/no-monolitos/microservicios/entregas:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: "DB_PASSWORD"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_PASSWORD"
+              name: "microservicios-config-sxhk"
+        - name: "DB_USERNAME"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_USERNAME"
+              name: "microservicios-config-sxhk"
+        - name: "DB_HOSTNAME"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_HOSTNAME"
+              name: "microservicios-config-sxhk"
+        - name: "BROKER_CONNECTION_STRING"
+          valueFrom:
+            configMapKeyRef:
+              key: "BROKER_CONNECTION_STRING"
+              name: "microservicios-config-sxhk"
+        - name: "BROKER_JWT_AUTH"
+          valueFrom:
+            configMapKeyRef:
+              key: "BROKER_JWT_AUTH"
+              name: "microservicios-config-sxhk"

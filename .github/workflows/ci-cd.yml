@@ -1,0 +1,78 @@
+name: Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GCP_ARTIFACT_URL: us-east1-docker.pkg.dev
+  GCP_PROJECT_ID: no-monolitos
+  GCR_REPOSITORY_NAME: microservicios
+  GCP_COMPUTE_ZONE: us-east1
+  GCP_CLUSTER_NAME: autopilot-microservicios
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        project_id: ${{ env.GCP_PROJECT_ID }}
+        export_environment_variables: true
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    - id: 'get-credentials'
+      uses: 'google-github-actions/get-gke-credentials@v1'
+      with:
+        cluster_name: ${{ env.GCP_CLUSTER_NAME }}
+        location: ${{ env.GCP_COMPUTE_ZONE }}
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1.1.0
+
+    - name: Build and push Ordenes image
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode | docker login -u _json_key --password-stdin https://${{ env.GCP_ARTIFACT_URL }}
+        docker build -t ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/ordenes:latest -f ordenes.Dockerfile .
+        docker push ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/ordenes:latest
+
+    - name: Deploy Ordenes to GKE
+      run: |
+        kubectl apply -f ordenes-deployment.yaml
+
+    - name: Build and push CentroDistribucion image
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode | docker login -u _json_key --password-stdin https://${{ env.GCP_ARTIFACT_URL }}
+        docker build -t ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/centrodistribucion:latest -f centrodistribucion.Dockerfile .
+        docker push ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/centrodistribucion:latest
+
+    - name: Deploy CentroDistribucion to GKE
+      run: |
+        kubectl apply -f centrodistribucion-deployment.yaml
+
+    - name: Build and push Entregas image
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode | docker login -u _json_key --password-stdin https://${{ env.GCP_ARTIFACT_URL }}
+        docker build -t ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/entregas:latest -f entregas.Dockerfile .
+        docker push ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/entregas:latest
+
+    - name: Deploy Entregas to GKE
+      run: |
+        kubectl apply -f entregas-deployment.yaml
+
+
+    - name: Build and push BFF image
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode | docker login -u _json_key --password-stdin https://${{ env.GCP_ARTIFACT_URL }}
+        docker build -t ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/bff:latest -f bff.Dockerfile .
+        docker push ${{ env.GCP_ARTIFACT_URL }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY_NAME }}/bff:latest
+
+    - name: Deploy BFF to GKE
+      run: |
+        kubectl apply -f bff-deployment.yaml

@@ -11,8 +11,8 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: str, tipo_
     try:
         avro_schema = AvroSchema(ComandoCrearOrden)
         async with aiopulsar.connect(
-            f'pulsar+ssl://{utils.broker_host()}:6651',
-            authentication=pulsar.AuthenticationToken(utils.get_token())
+            f'{utils.broker_connection_string()}',
+            authentication=utils.broker_auth()
         ) as cliente:
             async with cliente.subscribe(
                 topico, 

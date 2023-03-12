@@ -17,8 +17,8 @@ class Despachador:
 
     async def publicar_mensaje(self, mensaje, topico, schema):
         cliente = pulsar.Client(
-            f'pulsar+ssl://{utils.broker_host()}:6651', 
-            authentication=pulsar.AuthenticationToken(utils.get_token()))
+            f'{utils.broker_connection_string()}',
+            authentication=utils.broker_auth())
         publicador = cliente.create_producer(topico, schema=AvroSchema(ComandoCrearOrden))
         publicador.send(mensaje)
         cliente.close()

@@ -15,7 +15,7 @@ CENTRO_DISTRIBUCCION_ADDR = "Av Centro distribucion 123"
 def suscribirse_a_eventos():
     cliente = None
     try:
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        cliente = pulsar.Client(f'{utils.broker_connection_string()}', authentication=utils.broker_auth())
         consumidor = cliente.subscribe('eventos-orden', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='centrodistribucion-sub-eventos', schema=AvroSchema(EventoOrdenCreada))
 

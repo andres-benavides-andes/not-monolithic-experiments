@@ -1,4 +1,8 @@
-FROM python:3.10
+FROM python:3.10-alpine
+
+RUN apk update && apk add python3-dev \
+                        gcc \
+                        libc-dev
 
 EXPOSE 8003/tcp
 
@@ -9,4 +13,4 @@ COPY . .
 
 WORKDIR "/src"
 
-CMD [ "uvicorn", "bff_web.main:app", "--host", "localhost", "--port", "8003", "--reload"]
+CMD [ "uvicorn", "bff_web.main:app", "--host", "0.0.0.0", "--port", "8003"]
