@@ -15,6 +15,12 @@ spec:
       containers:
       - name: bff-container
         image: us-east1-docker.pkg.dev/no-monolitos/microservicios/bff:latest
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "128Mi"
         ports:
         - containerPort: 8003
         env:

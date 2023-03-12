@@ -15,6 +15,12 @@ spec:
       containers:
       - name: entregas-container
         image: us-east1-docker.pkg.dev/no-monolitos/microservicios/entregas:latest
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "128Mi"
         ports:
         - containerPort: 5000
         env:
