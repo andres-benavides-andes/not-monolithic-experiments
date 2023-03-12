@@ -13,7 +13,7 @@ tasks:
     command: pip install -U -r requirements.txt && pip install -U -r bff-requirements.txt
   - name: Crear imagenes Docker
     init: > 
-      docker build . -f aeroalpes.Dockerfile -t aeroalpes/flask &&
+      docker build . -f ordenes.Dockerfile -t ordenes/flask &&
       gp sync-done images
   - name: Crear folder para datos, clientes, conectores y asigna permisos
     init: > 
