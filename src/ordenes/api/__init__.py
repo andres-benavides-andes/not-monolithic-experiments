@@ -12,7 +12,6 @@ def registrar_handlers():
 
 def importar_modelos_alchemy():
     import ordenes.modulos.ordenes.infraestructura.dto
-    import ordenes.modulos.sagas.infraestructura.dto
 
 def comenzar_consumidor():
     import threading
