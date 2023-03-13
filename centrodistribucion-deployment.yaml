@@ -15,6 +15,7 @@ spec:
       containers:
       - name: centrodistribucion-container
         image: us-east1-docker.pkg.dev/no-monolitos/microservicios/centrodistribucion:latest
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "128Mi"

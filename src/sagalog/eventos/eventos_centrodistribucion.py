@@ -30,6 +30,7 @@ class EventoOrdenAlistada(EventoIntegracion):
     datacontenttype = String()
     service_name = String()
     data = EventoOrdenAlistadaPayload()
+    sim_error = String()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

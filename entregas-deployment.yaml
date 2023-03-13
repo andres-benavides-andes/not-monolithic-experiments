@@ -15,6 +15,7 @@ spec:
       containers:
       - name: entregas-container
         image: us-east1-docker.pkg.dev/no-monolitos/microservicios/entregas:latest
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "128Mi"

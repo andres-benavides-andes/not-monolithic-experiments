@@ -1,5 +1,5 @@
 # Not-monolithic-experiments
-Entrega 5 para la materia de diseño y construcción de aplicaciones no monolíticas
+Entrega 4 y 5 para la materia de diseño y construcción de aplicaciones no monolíticas
 
 # Utilizar en despliegue cloud
 
@@ -182,8 +182,6 @@ Se espera que el sistema frente a un aumento de transacciones de pedidos de 328.
 
 Al existir un broker de mensajería que es un elemento de plataforma altamente escalable y disponible, para la creación de orden se necesita que el microservicio de ordenes que procesa los comandos de creación de orden pueda escalar, esto es posible con un patrón de una arquitectura orientada a eventos debido a que los componentes consumidores son stateless y se puede configurar políticas de autoescalado horizontal basado en el número de comandos sin procesar que estén el tópico de ordenes.
 
-
-
 # Almacenamiento
 ## Topología de administración de datos
 Se utiliza una topología híbrida donde cada servicio tiene su propia base de datos independiente que no se comunica entre sí, lo cual puede ser referido como un namespace, pero coexisten en el mismo servidor, esto debido a la facilidad y flexbilidad para mantener y monitorear los cambios en un único servidor de base de datos.
@@ -193,6 +191,18 @@ Esto aplica para los 3 microservicios.
 Se utiliza un modelo CRUD donde se crean los objetos en la base de datos de cada microservicio y de allí se genera un evento que también se persiste en la base de datos y se publica al tópico de eventos correspondiente, pero el tópico no es persistente y no generamos proyecciones para generar el estado de la base de datos que contiene el estado de la orden.
 
 Esto aplica para los 3 microservicios.
+
+# Mapa de contexto As-To-Be modificado
+Teniendo en cuenta los comentarios del tutor en las entregas y adaptandolo a una comunicación orientada a los eventos, en base a los experimentos, el mapa de contexto resultante es el siguiente:
+
+![mapa_de_contexto_as_to_be](docs/mapa_contexto_as_to_be.png "mapa_de_contexto_as_to_be")
+
+Entre los cambios que se tiene son:
+* Se elimina el dominio Ordenes y el mapa de contexto PlanificacionOrden ahora pertenece al dominio de Logística. Este mapa de contexto en base a la orden generada elabora un plan para la entrega de productos/bienes. 
+* Se agrega contexto de AbastecimientoPorTerceros, que apoya al contexto Abastecimiento en caso no se pueda abastecer con las existencias de la compañia. Esto se hace con el fin de tener contextos separados, uno específico para atender operaciones con bodegas externas y el otro que trabajaría con los otros contextos enfocados en las bodegas internas.
+* Se evita el uso de patrón de comunicación Shared Kernel debido a que es un patrón no recomendable para un arquitectura basada en eventos.
+* Se agrega contexto de AdministracionUltimaMilla, que en base a los despachos comunicados por DespachoAlimentos o DespachoPedidos (bienes) genera un comando para que EntregaPersonalPropio o EntregaPorTerceros, según convenga, se hagan cargo de entregar lo solicitado en la orden del cliente.
+
 
 # Actividades realizadas por cada miembro
 Miguel y Ayrton: Implementación de microservicio de Entregas utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que la orden fue entregada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
