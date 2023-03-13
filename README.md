@@ -163,20 +163,24 @@ En los escenarios de calidad que definimos para esta experimentación se encuent
 
 ## Conclusiones de la experimentacion 
 ## Escenario Mantenibilidad - Facilidad de integración
+Se espera que el sistema sea capaz de integrarse con cualquier sistema tercero en un tiempo menor o igual a 2 meses, para así, poder brindar servicios de cadena de suministro interactuando con el sistema integrado. 
+
+Como se cumplió: 
+
+La mejor forma de cumplir esto, es con la arquitectura propuesta la cual esta basa en eventos, el microservicio encargado de administrar los centros de distribución el cual está diseñado para recibir eventos de ordenes utilizando un schema Avro completamente versionada, esto junto con la orquestación que se definió para la arquitectura nos ayuda a cumplir con el atributo de mantenibilidad y la facilidad de integración. 
+
+Basados en la experiencia del equipo de desarrollo y en el tiempo que nos tomó desarrollar los experimentos, estimamos que diseñar e implementar nuevos schemas de sistemas externos que se adapten a los eventos que ya se manejan en los microservicios no debería tomar tiempo del definido en el escenario de calidad. 
+
+Para probar esto se crearon varios clientes de prueba para hacer en envió y consumo de los eventos, con los cuales se simularon diferentes sistemas multisource, en la construcción de estos clientes y la integración con la interfaz que se definió no nos tomó más de 8 horas para tener una integración suficiente para hacer las pruebas necesarias.    
+
+## Escenario Disponibilidad - Resiliencia a particiones
 Se espera que después que una orden haya sido recibida esta sea procesada el 99.999% de las veces dado que alguno de los microservicios de órdenes, centro de distribución o entregas no esté funcionando 
 
 Cómo se cumplió: 
 
 Como ya lo mencionamos tenemos una arquitectura basada en eventos, lo cual hace que la comunicación entre nuestros microservicios sea totalmente asíncrona y con cumplimos el objetivo de tener desacoplada nuestra solución final. Si en algún momento uno de los microservicios llegase a fallar el broker de mensajería se encargaría que ningún Evento/Comando se pierda, si el evento no se complote por alguna falla del microservicio, estos no serán eliminados y cuando el microservicio se recupere el evento será procesado, con eso no existe la perdida de mensajes entre los microservicios y se procesaran el 99.98% de los mensajes. 
 
-Para probar que la resiliencia esté funcionando como esperamos, se decidió detener el microservicio que se construyó para los centros de distribución, ya que este es el servicio que este en medio del proceso total de la gestión de las ordenes, las ordenes se siguen creando, los eventos se siguen generando y el microservicio de entregas sigue en escucha de los eventos generados por centrodedistribucio, los eventos de crearOrden se siguen creando y agregándose a la cola de mensajería, y cuando el microservicio centrodedistribucio este al aire de nuevo, el flujo de las ordenes continua de forma normal con los eventos crearOrden y los eventos que ya se crearon mientras el microservicios esta deshabilitado, también son atendidos    
-
-## Escenario Disponibilidad - Resiliencia a particiones
-Se espera que después que una orden haya sido recibida esta sea procesada el 99.999% de las veces dado que alguno de los microservicios de ordenes, centro de distribución o entregas no esté funcionando
-
-¿Cómo se cumple el atributo de disponibilidad?
-
-Los microservicios son completamente stateless, asíncronos y por lo tanto desacoplados, por lo cual, podemos particionar el sistema tumbando cualquiera de los microservicios mencionados y ningún Evento/Comando va a perderse, el procesamiento del microservicio puede fallar pero si no se completó los eventos estos no son eliminados y cuando se recupere va a volverse a procesar con lo cual no existe perdida de mensajes y se procesan el 99.999% de los mensajes (Pueden existir edge cases donde incluso la infraestructura colapse por eso se eligen esos SLA)
+Para probar que la resiliencia esté funcionando como esperamos, se decidió detener el microservicio que se construyó para los centros de distribución, ya que este es el servicio que este en medio del proceso total de la gestión de las ordenes, las ordenes se siguen creando, los eventos se siguen generando y el microservicio de entregas sigue en escucha de los eventos generados por centrodedistribucio, los eventos de crearOrden se siguen creando y agregándose a la cola de mensajería, y cuando el microservicio centrodedistribucio este al aire de nuevo, el flujo de las ordenes continua de forma normal con los eventos crearOrden y los eventos que ya se crearon mientras el microservicios esta deshabilitado, también son atendidos 
 
 ## Escenario Escalabilidad - Recibir ordenes
 Se espera que el sistema frente a un aumento de transacciones de pedidos de 328.000 pedidos por día en temporada pueda procesar la creación de pedidos en menos de 2 minutos el 99.99% de las veces. 
