@@ -1,5 +1,5 @@
 # Not-monolithic-experiments
-Entrega 4 para la materia de diseño y construcción de aplicaciones no monolíticas
+Entrega 4 y 5 para la materia de diseño y construcción de aplicaciones no monolíticas
 
 # Ejecución
 
@@ -130,8 +130,6 @@ Se espera que el sistema frente a un aumento de transacciones de pedidos de 328.
 ¿Cómo se cumple el atributo de escalabilidad?
 
 Al existir un broker de mensajería que es un elemento de plataforma altamente escalable y disponible, para la creación de orden se necesita que el microservicio de ordenes que procesa los comandos de creación de orden pueda escalar, esto es posible con un patrón de una arquitectura orientada a eventos debido a que los componentes consumidores son stateless y se puede configurar políticas de autoescalado horizontal basado en el número de comandos sin procesar que estén el tópico de ordenes.
-
-
 
 # Almacenamiento
 ## Topología de administración de datos
