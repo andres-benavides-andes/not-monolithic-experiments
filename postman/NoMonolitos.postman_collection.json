@@ -1,0 +1,460 @@
+{
+	"info": {
+		"_postman_id": "fcb06447-89f7-45e8-bd58-c7d195bb5b16",
+		"name": "No Monolitos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19322134"
+	},
+	"item": [
+		{
+			"name": "Crear Orden sin fallos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://34.75.144.91/v1",
+					"protocol": "http",
+					"host": [
+						"34",
+						"75",
+						"144",
+						"91"
+					],
+					"path": [
+						"v1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Crear Orden sin fallos",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://34.75.144.91/v1",
+							"protocol": "http",
+							"host": [
+								"34",
+								"75",
+								"144",
+								"91"
+							],
+							"path": [
+								"v1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 13 Mar 2023 00:42:31 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "74"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"crearOrden\": {\n            \"mensaje\": \"Procesando Mensaje\",\n            \"codigo\": 203\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Orden Falla servicio ordenes",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"ordenes\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://34.75.144.91/v1",
+					"protocol": "http",
+					"host": [
+						"34",
+						"75",
+						"144",
+						"91"
+					],
+					"path": [
+						"v1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Crear Orden Falla servicio ordenes",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"ordenes\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://34.75.144.91/v1",
+							"protocol": "http",
+							"host": [
+								"34",
+								"75",
+								"144",
+								"91"
+							],
+							"path": [
+								"v1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 13 Mar 2023 00:42:37 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "74"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"crearOrden\": {\n            \"mensaje\": \"Procesando Mensaje\",\n            \"codigo\": 203\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Orden Falla servicio centrodistribucion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"centrodistribucion\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://34.75.144.91/v1",
+					"protocol": "http",
+					"host": [
+						"34",
+						"75",
+						"144",
+						"91"
+					],
+					"path": [
+						"v1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Crear Orden Falla servicio centrodistribucion",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"centrodistribucion\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://34.75.144.91/v1",
+							"protocol": "http",
+							"host": [
+								"34",
+								"75",
+								"144",
+								"91"
+							],
+							"path": [
+								"v1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 13 Mar 2023 00:42:44 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "74"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"crearOrden\": {\n            \"mensaje\": \"Procesando Mensaje\",\n            \"codigo\": 203\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Orden Falla servicio entregas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"entregas\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://34.75.144.91/v1",
+					"protocol": "http",
+					"host": [
+						"34",
+						"75",
+						"144",
+						"91"
+					],
+					"path": [
+						"v1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Crear Orden Falla servicio entregas",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\r\n  crearOrden(idUsuario: \"123\", simError: \"entregas\", items: [\r\n    {\r\n      direccionRecogida: \"Direccion recogida 123\",\r\n      direccionEntrega: \"Direccion entrega 123\",\r\n      tamanio: \"5kg\",\r\n      telefono: \"3210003212\"\r\n    }\r\n  ])\r\n  {\r\n    mensaje\r\n    codigo\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://34.75.144.91/v1",
+							"protocol": "http",
+							"host": [
+								"34",
+								"75",
+								"144",
+								"91"
+							],
+							"path": [
+								"v1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 13 Mar 2023 00:42:51 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "74"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"crearOrden\": {\n            \"mensaje\": \"Procesando Mensaje\",\n            \"codigo\": 203\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Sagalog Obtener Todas las transacciones",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://34.23.53.24/transactions/",
+					"protocol": "http",
+					"host": [
+						"34",
+						"23",
+						"53",
+						"24"
+					],
+					"path": [
+						"transactions",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sagalog Obtener Todas las transacciones",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://34.23.53.24/transactions/",
+							"protocol": "http",
+							"host": [
+								"34",
+								"23",
+								"53",
+								"24"
+							],
+							"path": [
+								"transactions",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 13 Mar 2023 07:33:54 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "300"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"transactions\": [\n        {\n            \"transaction_id\": \"e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1\",\n            \"step\": \"OrdenCreada\",\n            \"estado\": \"EXITOSO\",\n            \"fecha_transaccion\": \"2023-03-13 07:32:54\"\n        },\n        {\n            \"transaction_id\": \"e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1\",\n            \"step\": \"OrdenAlistada\",\n            \"estado\": \"FALLIDO\",\n            \"fecha_transaccion\": \"2023-03-13 07:32:54\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Sagalog Saga de una transaccion en especifico",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://34.23.53.24/transactions/e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1",
+					"protocol": "http",
+					"host": [
+						"34",
+						"23",
+						"53",
+						"24"
+					],
+					"path": [
+						"transactions",
+						"e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sagalog Saga de una transaccion en especifico",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://34.23.53.24/transactions/e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1",
+							"protocol": "http",
+							"host": [
+								"34",
+								"23",
+								"53",
+								"24"
+							],
+							"path": [
+								"transactions",
+								"e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 13 Mar 2023 07:34:19 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "300"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"transactions\": [\n        {\n            \"transaction_id\": \"e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1\",\n            \"step\": \"OrdenCreada\",\n            \"estado\": \"EXITOSO\",\n            \"fecha_transaccion\": \"2023-03-13 07:32:54\"\n        },\n        {\n            \"transaction_id\": \"e90aa7fc-1ffd-4c7f-89a0-e6c437f461d1\",\n            \"step\": \"OrdenAlistada\",\n            \"estado\": \"FALLIDO\",\n            \"fecha_transaccion\": \"2023-03-13 07:32:54\"\n        }\n    ]\n}"
+				}
+			]
+		}
+	]
+}

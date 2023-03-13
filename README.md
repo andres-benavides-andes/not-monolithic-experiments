@@ -1,7 +1,56 @@
 # Not-monolithic-experiments
-Entrega 4 para la materia de diseño y construcción de aplicaciones no monolíticas
+Entrega 5 para la materia de diseño y construcción de aplicaciones no monolíticas
 
-# Ejecución
+# Utilizar en despliegue cloud
+
+## Plataforma de despliegue
+- Utilizamos un cluster de kubernetes en GCP y una base de datos manejada de MySQL en GCP
+- Para el broker de eventos de pulsar utilizamos un cluster manejado en streamnative.com
+
+
+Endpoints:
+- BFF: http://34.75.144.91/v1
+- Sagalog: http://34.23.53.24/transactions
+
+
+# Operaciones de ejecucion
+## Coleccion postman
+La coleccion se encuentra ```postman/NoMonolitos.postman_collection.json```
+
+## Como ejecutar una mutacion al BFF?
+El BFF expone GraphQL y tiene una interfaz grafica en la url o puede ejecutar la coleccion de postman:
+- http://34.75.144.91/v1
+
+Desde alli puede ejecutar la siguiente mutacion
+```
+mutation {
+  crearOrden(idUsuario: "123", simError: "", items: [
+    {
+      direccionRecogida: "Direccion recogida 123",
+      direccionEntrega: "Direccion entrega 123",
+      tamanio: "5kg",
+      telefono: "3210003212"
+    }
+  ])
+  {
+    mensaje
+    codigo
+  }
+}
+```
+
+Puede cambiar los parametros de idUsuario, agregar o quitar los items que desee cambiando los respectivos paramétros, lo más importante de esa petición es el **simError**, este es el parámetro que permite simular un error en alguno de los servicios y por ende generar eventos de compensación para revertir la orden.
+
+Los valores de simError son: ordenes, centrodistribucion y entregas que son los respectivos microservicios, si desea que la transacción sea exitosa reemplace por una string vacía
+
+## Como consultar el saga log?
+El saga log expone un endpoint en la siguiente url:
+- Sagalog: ```GET http://34.23.53.24/transactions```
+- Sagalog de una transaccion en especifica: ```GET http://34.23.53.24/transactions/<order_guid>```
+
+En el primer endpoint vemos todas los eventos que se han escuchado mientras que en el segundo obtenemos el sagalog de una transaccion especifica
+
+# Ejecución en Maquina local 
 
 ## Requisitos
 - Docker
@@ -103,7 +152,9 @@ Esto va a publicar un comando en el topico de comandos de eventos con la informa
 
 ## Overview diagrama arquitectura
 
-![arquitectura](docs/overview.png "Arquitectura")
+![arquitectura](docs/entrega5.png "Arquitectura")
+
+Se usa un patrón de Sagas utilizando Coreografía, donde el fundamento de la coreografía es que cada quién sabe cómo coordinarse por lo tal el saga log es un observador del estado de la transacción aunque puede tomar parte activa en situaciones donde la coreografía no vaya en buen camino, de esta manera logramos que en la transacción larga consigamos atomicidad creando la Orden
 
 # Escenarios de arquitectura
 Algunos escenarios fueron modificados debido a que escenarios propuestos en la entrega pasada no reflejaban.
