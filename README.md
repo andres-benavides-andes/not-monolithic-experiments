@@ -211,12 +211,59 @@ Entre los cambios que se tiene son:
 * Se agrega contexto de AdministracionUltimaMilla, que en base a los despachos comunicados por DespachoAlimentos o DespachoPedidos (bienes) genera un comando para que EntregaPersonalPropio o EntregaPorTerceros, según convenga, se hagan cargo de entregar lo solicitado en la orden del cliente.
 
 
+# Diagrama de contexto modificado
+Teniendo en cuenta los comentarios del tutor en las entregas y adaptandolo a una comunicación orientada a los eventos, en base a los experimentos, el diagrama de contexto resultante es el siguiente:
+
+![contexto](docs/contexto.png "contexto")
+
+Entre los cambios que se tiene son:
+* Se trata de un sistema distribuido basado en microservicios entre los dominios de logística y cadena de suministro. Esta arquitectura permitirá la independencia entre los servidores del sistema y resiliencia a posibles fallos entre alguno de ellos. Se afecta la comunicación entre los microservicios pero permite que estos escalen según la demanda.
+
+* Se decide separar las bases de datos a un servidos distinto al del sistema, para así dar la posibilidad de que estas bases de datos puedan escalar sin afectar el rendimiento de los servidores del sistema. Al hacer esto se está asumiendo el reto de que la comunicación con las bd's dependa de la conectividad de red entre los servidores del sistema y la base de datos, aumentando así la latencia en las funcionalidades. Sin embargo el desacoplamiento entre ambos beneficia la independencia entre los servidores.
+
+* Se tiene en cuenta la comunicación asíncrona con servicios externos tanto para bodegas como para entregas. Esto permite que el sistema sea capaz de soportar solicitudes, apoyándose de los servicios que brinden otros proveedores. La desventaja sería que requerirá asegurarse que la comunicación con sistemas externos sea estable y una buena definición de esquema y patrones para que esta interacción funcione.
+
+
+# Vista funcional modificado
+Teniendo en cuenta los comentarios del tutor en las entregas y adaptandolo a una comunicación orientada a los eventos, en base a los experimentos, la vista funcional resultante es la siguiente:
+
+![vista_funcional](docs/modulo_comp.png "modulo_comp")
+
+Entre los cambios que se tiene son:
+* Se propone tener los módulos de proyecto en base a los dominios. De esta forma, se desacopla la dependencia entre ellos, y sus funcionalidades e instancias que serán especializadas según donde se encuentren. La desventaja de esto es que puede haber confusión entre instancias es que puede haber muchas veces repetición de código en ambos módulos, lo cual atentaría con el patrón DRY, sin embargo, independizará muchas veces cuando en un dominio evolucione una función, mientras que en otra se mantenga.
+
+* Es necesario que los módulos estén comunicados con la orden, ya que esta brindará la información necesaria para verificar la disponibilidad del pedido según Cadena suministro, como planificar y ejecutar la mejor manera para entregar el pedido al cliente.
+
+* En ambos módulos se han definido elementos especializados para las integraciones con terceros (AbastecimientoPorTerceros y EntregaPorTerceros). Esto permitirá que se tenga aislada las lógicas de integración. El tener más elementos especializados para trabajar con terceros deberá ser lo suficientemente resiliente para poder soportar fallas de sistemas terceros sin afectar al propio sistema.
+
+
+# Diagrama de componentes C&C modificado
+Teniendo en cuenta los comentarios del tutor en las entregas y adaptandolo a una comunicación orientada a los eventos, en base a los experimentos, el diagrama de componentes resultante es el siguiente:
+
+![componente_c](docs/componente_c.png "componente_c")
+
+Entre los cambios que se tiene son:
+* Se utiliza comunicación asíncrona entre todos los componentes para así asegurar la independencia, escalabilidad y disponibilidad entre los componentes, aumentando tambien su resiliencia. No obstante, tener comunicación asíncrona generará cierta latencia en el sistema en general.
+
+* Se aplica el uso de Sagas, el cuál permite al usuario consultar el estado de su pedido a lo largo del flujo desde que su solicitud hasta su entrega.
+
+* Se aplica la comunicación por tópicos de eventos, y ante eventuales fallas, se utilizan tópicos de eventos por compensación. La desventaja de ello es que aumenta la complejidad para probar el flujo completo del sistema.
+
+
 # Actividades realizadas por cada miembro
-Miguel y Ayrton: Implementación de microservicio de Entregas utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que la orden fue entregada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
+Miguel:
+* Implementación de microservicio de Entregas utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que la orden fue entregada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
 
-Andres: Implementación de microservicio de Ordenes utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que una orden fue creada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
+Andres:
+* Implementación de microservicio de Ordenes utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que una orden fue creada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
+* Documentación de conclusiones en base a resultados de los experimentos.
 
-Pedro: Implementación de microservicio de Centro de distribucion utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a tener una orden lista para entregar, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
+Pedro:
+* Implementación de microservicio de Centro de distribucion utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a tener una orden lista para entregar, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
+
+Ayrton:
+* Apoyo en implementación de microservicio de Entregas utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que la orden fue entregada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
+* Documentación de diagramas resultantes en base a los resultados de los experimentos.
 
 # Servicios desplegados en plataforma local
-Para la entrega parcial 4, se ejecuta de manera local utilizando gitpod o en maquina local, mientras que en la entrega 5 se va acabar la implementación de despliegue en la nube.
+Para la entrega parcial 4, se ejecutó de manera local utilizando gitpod o en maquina local, mientras que en la entrega 5 implementó el despliegue en la nube.
