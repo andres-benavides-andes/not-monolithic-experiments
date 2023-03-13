@@ -159,14 +159,17 @@ Se usa un patrón de Sagas utilizando Coreografía, donde el fundamento de la co
 # Escenarios de arquitectura
 Algunos escenarios fueron modificados debido a que escenarios propuestos en la entrega pasada no reflejaban.
 
+En los escenarios de calidad que definimos para esta experimentación se encuentran los atributos de calidad de mantenibilidad, disponibilidad y escalabilidad, a continuación, veremos los resultados que se obtuvieron en cada escenario de calidad. 
 
+## Conclusiones de la experimentacion 
 ## Escenario Mantenibilidad - Facilidad de integración
-Se espera que el sistema sea capaz de integrarse con cualquier sistema tercero en un tiempo menor o igual a 2 meses, para así, poder brindar servicios de cadena de 
-suministro interactuando con el sistema integrado.
+Se espera que después que una orden haya sido recibida esta sea procesada el 99.999% de las veces dado que alguno de los microservicios de órdenes, centro de distribución o entregas no esté funcionando 
 
-¿Cómo se cumple?
+Cómo se cumplió: 
 
-Existe un desacoplamiento del sistema existente mediante el uso de una arquitectura basada en evento utilizando tópico donde el punto de acoplamiento ahora es la definición de una interfaz en el tópico de Centro de Distribución para recibir eventos de ordenes utilizando un schema Avro completamente versionada, lo cual permite que cualquier nuevo sistema solo deba integrarse utilizando dicho schema con el tópico que es un elemento de infraestructura sin lógica de negocio.
+Como ya lo mencionamos tenemos una arquitectura basada en eventos, lo cual hace que la comunicación entre nuestros microservicios sea totalmente asíncrona y con cumplimos el objetivo de tener desacoplada nuestra solución final. Si en algún momento uno de los microservicios llegase a fallar el broker de mensajería se encargaría que ningún Evento/Comando se pierda, si el evento no se complote por alguna falla del microservicio, estos no serán eliminados y cuando el microservicio se recupere el evento será procesado, con eso no existe la perdida de mensajes entre los microservicios y se procesaran el 99.98% de los mensajes. 
+
+Para probar que la resiliencia esté funcionando como esperamos, se decidió detener el microservicio que se construyó para los centros de distribución, ya que este es el servicio que este en medio del proceso total de la gestión de las ordenes, las ordenes se siguen creando, los eventos se siguen generando y el microservicio de entregas sigue en escucha de los eventos generados por centrodedistribucio, los eventos de crearOrden se siguen creando y agregándose a la cola de mensajería, y cuando el microservicio centrodedistribucio este al aire de nuevo, el flujo de las ordenes continua de forma normal con los eventos crearOrden y los eventos que ya se crearon mientras el microservicios esta deshabilitado, también son atendidos    
 
 ## Escenario Disponibilidad - Resiliencia a particiones
 Se espera que después que una orden haya sido recibida esta sea procesada el 99.999% de las veces dado que alguno de los microservicios de ordenes, centro de distribución o entregas no esté funcionando
@@ -176,11 +179,11 @@ Se espera que después que una orden haya sido recibida esta sea procesada el 99
 Los microservicios son completamente stateless, asíncronos y por lo tanto desacoplados, por lo cual, podemos particionar el sistema tumbando cualquiera de los microservicios mencionados y ningún Evento/Comando va a perderse, el procesamiento del microservicio puede fallar pero si no se completó los eventos estos no son eliminados y cuando se recupere va a volverse a procesar con lo cual no existe perdida de mensajes y se procesan el 99.999% de los mensajes (Pueden existir edge cases donde incluso la infraestructura colapse por eso se eligen esos SLA)
 
 ## Escenario Escalabilidad - Recibir ordenes
-Se espera que el sistema frente a un aumento de transacciones de pedidos de 328.000 pedidos por día en temporada pueda procesar la creación de pedidos en menos de 2 minutos el 99.99% de las veces.
+Se espera que el sistema frente a un aumento de transacciones de pedidos de 328.000 pedidos por día en temporada pueda procesar la creación de pedidos en menos de 2 minutos el 99.99% de las veces. 
 
-¿Cómo se cumple el atributo de escalabilidad?
+Como se cumplió: 
 
-Al existir un broker de mensajería que es un elemento de plataforma altamente escalable y disponible, para la creación de orden se necesita que el microservicio de ordenes que procesa los comandos de creación de orden pueda escalar, esto es posible con un patrón de una arquitectura orientada a eventos debido a que los componentes consumidores son stateless y se puede configurar políticas de autoescalado horizontal basado en el número de comandos sin procesar que estén el tópico de ordenes.
+La naturaleza de una arquitectura orientada a ventos hace que un atributo de calidad como la escalabilidad sea inherente a la construcción de la misma, para sumar a este atributo de calidad y cumplir con el requerimiento de calidad propuesto, se decidió implementar un patrón de orquestación para el manejo y orden de los eventos que comunican a los diferentes microservicios. Al tener un servicio central que se encarga del manejo de los eventos, es más fácil escalar los recursos necesarios para satisfacer el aumento de las peticiones que se esperan que se presenten en un determinado momento.
 
 # Almacenamiento
 ## Topología de administración de datos
