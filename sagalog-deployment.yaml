@@ -22,7 +22,7 @@ spec:
           limits:
             memory: "128Mi"
         ports:
-        - containerPort: 8003
+        - containerPort: 8004
         env:
         - name: "DB_PASSWORD"
           valueFrom:
