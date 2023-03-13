@@ -141,6 +141,18 @@ Se utiliza un modelo CRUD donde se crean los objetos en la base de datos de cada
 
 Esto aplica para los 3 microservicios.
 
+# Mapa de contexto As-To-Be modificado
+Teniendo en cuenta los comentarios del tutor en las entregas y adaptandolo a una comunicación orientada a los eventos, en base a los experimentos, el mapa de contexto resultante es el siguiente:
+
+![mapa_de_contexto_as_to_be](docs/mapa_contexto_as_to_be.png "mapa_de_contexto_as_to_be")
+
+Entre los cambios que se tiene son:
+* Se elimina el dominio Ordenes y el mapa de contexto PlanificacionOrden ahora pertenece al dominio de Logística. Este mapa de contexto en base a la orden generada elabora un plan para la entrega de productos/bienes. 
+* Se agrega contexto de AbastecimientoPorTerceros, que apoya al contexto Abastecimiento en caso no se pueda abastecer con las existencias de la compañia. Esto se hace con el fin de tener contextos separados, uno específico para atender operaciones con bodegas externas y el otro que trabajaría con los otros contextos enfocados en las bodegas internas.
+* Se evita el uso de patrón de comunicación Shared Kernel debido a que es un patrón no recomendable para un arquitectura basada en eventos.
+* Se agrega contexto de AdministracionUltimaMilla, que en base a los despachos comunicados por DespachoAlimentos o DespachoPedidos (bienes) genera un comando para que EntregaPersonalPropio o EntregaPorTerceros, según convenga, se hagan cargo de entregar lo solicitado en la orden del cliente.
+
+
 # Actividades realizadas por cada miembro
 Miguel y Ayrton: Implementación de microservicio de Entregas utilizando los principios de DDD, con patrones de Comandos y Eventos, eventos de dominio e integración para la comunicación interna dentro del microservicio y externa con el tópico donde se publican los eventos relacionados a que la orden fue entregada, persistencia de los objetos y eventos en la base de datos utilizando CRUD en un mecanismo de unidad de trabajo.
 
