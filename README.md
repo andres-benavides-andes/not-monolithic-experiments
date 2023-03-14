@@ -162,6 +162,11 @@ Algunos escenarios fueron modificados debido a que escenarios propuestos en la e
 En los escenarios de calidad que definimos para esta experimentación se encuentran los atributos de calidad de mantenibilidad, disponibilidad y escalabilidad, a continuación, veremos los resultados que se obtuvieron en cada escenario de calidad. 
 
 ## Conclusiones de la experimentacion 
+
+Tras analizar los resultados de la experimentación y evaluar los atributos de calidad definidos, podemos concluir que la hipótesis de implementar una arquitectura orientada a eventos, un desacoplamiento del monolito y un diseño distribuido basado en microservicios resultó ser la solución adecuada para dar soporte a un CSaaS y un modelo multi-source. El presente documento y el código implementado validan que las decisiones de diseño tomadas al inicio del proyecto, y que se fueron perfeccionando a medida que avanzaba el desarrollo, son acertadas para iniciar la implementación completa de una nueva arquitectura.
+
+A continuación, veremos a detalles los resultados obtenidos para cada escenario de calidad propuesto y como estos resultados nos llevan a concluir que la hipótesis con la que inicio esta experimentación es correcta 
+
 ## Escenario Mantenibilidad - Facilidad de integración
 Se espera que el sistema sea capaz de integrarse con cualquier sistema tercero en un tiempo menor o igual a 2 meses, para así, poder brindar servicios de cadena de suministro interactuando con el sistema integrado. 
 
@@ -188,6 +193,7 @@ Se espera que el sistema frente a un aumento de transacciones de pedidos de 328.
 Como se cumplió: 
 
 La naturaleza de una arquitectura orientada a ventos hace que un atributo de calidad como la escalabilidad sea inherente a la construcción de la misma, para sumar a este atributo de calidad y cumplir con el requerimiento de calidad propuesto, se decidió implementar un patrón de orquestación para el manejo y orden de los eventos que comunican a los diferentes microservicios. Al tener un servicio central que se encarga del manejo de los eventos, es más fácil escalar los recursos necesarios para satisfacer el aumento de las peticiones que se esperan que se presenten en un determinado momento.
+
 
 # Almacenamiento
 ## Topología de administración de datos
