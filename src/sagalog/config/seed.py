@@ -8,8 +8,8 @@ def seed_steps_table():
             # Si está vacía, insertamos los registros
             steps = [
                 PasoSaga(guid=str(uuid.uuid4()), index=1, comando='CrearOrden', evento='OrdenCreada', error='CreacionOrdenFallida'),
-                PasoSaga(guid=str(uuid.uuid4()), index=1, comando='AlistarOrden', evento='OrdenAlistada', error='OrdenDesAlistada', compensacion='DesalistarOrden'),
-                PasoSaga(guid=str(uuid.uuid4()), index=1, comando='EntregarOrden', evento='OrdenEntregada', error='CancelarOrden', compensacion='CancelarEntrega')
+                PasoSaga(guid=str(uuid.uuid4()), index=1, comando='AlistarOrden', evento='OrdenAlistada', error='CancelarOrden', compensacion='DesalistarOrden'),
+                PasoSaga(guid=str(uuid.uuid4()), index=1, comando='EntregarOrden', evento='OrdenEntregada', error='OrdenDesAlistada', compensacion='CancelarEntrega')
             ]
             session.bulk_save_objects(steps)
             session.commit()
